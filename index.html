@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Spinforge</title>
+    <style>
+      :root {
+        --me: #ff7a33;
+        --foe: #49b6ff;
+        --ink: #e9eef8;
+        --dim: #8a94a8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #05070b;
+        color: var(--ink);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        overflow: hidden;
+        user-select: none;
+      }
+      #game {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      #hud {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+      .panel {
+        position: absolute;
+        top: 18px;
+        width: min(34vw, 380px);
+      }
+      .panel.left {
+        left: 22px;
+      }
+      .panel.right {
+        right: 22px;
+        text-align: right;
+      }
+      .name {
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .panel.right .name {
+        flex-direction: row-reverse;
+      }
+      .left .name {
+        color: var(--me);
+      }
+      .right .name {
+        color: var(--foe);
+      }
+      .pips {
+        display: flex;
+        gap: 6px;
+      }
+      .pips i {
+        width: 12px;
+        height: 12px;
+        transform: rotate(45deg);
+        border: 2px solid currentColor;
+        opacity: 0.5;
+      }
+      .pips i.on {
+        background: currentColor;
+        opacity: 1;
+        box-shadow: 0 0 10px currentColor;
+      }
+      .bar {
+        position: relative;
+        height: 14px;
+        margin-top: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        transform: skewX(-18deg);
+        overflow: hidden;
+      }
+      .bar > i {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: currentColor;
+        box-shadow: 0 0 12px currentColor;
+      }
+      .panel.right .bar > i {
+        left: auto;
+        right: 0;
+      }
+      .left .spin {
+        color: var(--me);
+      }
+      .right .spin {
+        color: var(--foe);
+      }
+      .bar.burst {
+        height: 7px;
+        color: #ff3b3b;
+      }
+      .bar.burst > i {
+        width: 0;
+      }
+      .label {
+        font-size: 10px;
+        color: var(--dim);
+        margin-top: 4px;
+        letter-spacing: 0.2em;
+      }
+      #timer {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 40px;
+        font-variant-numeric: tabular-nums;
+        text-shadow: 0 0 18px rgba(120, 170, 255, 0.6);
+      }
+      #round {
+        position: absolute;
+        top: 64px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        color: var(--dim);
+        letter-spacing: 0.3em;
+        white-space: nowrap;
+      }
+      /* Phones held sideways: little height, so everything is tighter. */
+      @media (max-height: 520px) {
+        .panel {
+          top: 8px;
+        }
+        .name {
+          font-size: 14px;
+        }
+        .bar {
+          height: 10px;
+          margin-top: 5px;
+        }
+        #timer {
+          top: 4px;
+          font-size: 28px;
+        }
+        #round {
+          top: 38px;
+        }
+        #toast {
+          top: 20%;
+          font-size: 16px;
+        }
+      }
+      html,
+      body,
+      #game {
+        touch-action: none;
+        overscroll-behavior: none;
+        -webkit-user-select: none;
+      }
+      #big {
+        position: absolute;
+        top: 34%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: clamp(48px, 11vw, 130px);
+        font-weight: 900;
+        font-style: italic;
+        letter-spacing: 0.04em;
+        text-shadow:
+          0 0 30px rgba(255, 170, 80, 0.8),
+          0 4px 0 rgba(0, 0, 0, 0.5);
+      }
+      #big.pop {
+        animation: pop 0.35s cubic-bezier(0.2, 1.6, 0.4, 1);
+      }
+      @keyframes pop {
+        from {
+          transform: scale(1.7);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      #sub {
+        position: absolute;
+        top: calc(34% + clamp(60px, 13vw, 150px));
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 18px;
+        letter-spacing: 0.3em;
+        color: var(--ink);
+      }
+      #toast {
+        position: absolute;
+        top: 24%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 22px;
+        letter-spacing: 0.35em;
+        color: #ffe9a8;
+        text-shadow: 0 0 16px #ffb347;
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      #launch {
+        position: absolute;
+        bottom: 84px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(70vw, 440px);
+        text-align: center;
+      }
+      #launch .bar {
+        height: 20px;
+        color: var(--me);
+      }
+      #launch .sweet {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 10%;
+        background: rgba(255, 255, 255, 0.28);
+        border-left: 2px solid #fff;
+      }
+      #tilt {
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--dim);
+        letter-spacing: 0.2em;
+      }
+      #ability {
+        position: absolute;
+        bottom: 24px;
+        left: 22px;
+        width: 92px;
+        height: 92px;
+        border: 2px solid var(--me);
+        color: var(--me);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        font-size: 16px;
+        background: rgba(10, 12, 18, 0.7);
+        overflow: hidden;
+      }
+      #ability.ready {
+        box-shadow:
+          0 0 18px var(--me),
+          inset 0 0 14px rgba(255, 122, 51, 0.35);
+      }
+      #ability small {
+        font-size: 10px;
+        color: var(--dim);
+        letter-spacing: 0.2em;
+      }
+      #abFill {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 0;
+        background: rgba(0, 0, 0, 0.72);
+      }
+      #ability span,
+      #ability small {
+        position: relative;
+      }
+      #hint {
+        padding: 0 130px;
+        position: absolute;
+        bottom: 22px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--dim);
+        letter-spacing: 0.16em;
+      }
+      #start {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: radial-gradient(circle at 50% 40%, rgba(20, 28, 48, 0.72), rgba(3, 4, 8, 0.94));
+        cursor: pointer;
+        text-align: center;
+        padding: 16px;
+      }
+      #start h1 {
+        margin: 0;
+        font-size: clamp(44px, 10vw, 110px);
+        font-weight: 900;
+        font-style: italic;
+        letter-spacing: 0.06em;
+        background: linear-gradient(100deg, var(--me), #ffd27a 45%, var(--foe));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      #start p {
+        margin: 0;
+        color: var(--dim);
+        letter-spacing: 0.14em;
+        font-size: 13px;
+        line-height: 2;
+      }
+      #start b {
+        color: var(--ink);
+      }
+      #start .go {
+        margin-top: 14px;
+        padding: 14px 44px;
+        border: 2px solid var(--me);
+        color: var(--me);
+        font-weight: 800;
+        letter-spacing: 0.3em;
+        animation: pulse 1.4s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        50% {
+          box-shadow: 0 0 26px var(--me);
+        }
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-Cefk613T.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-B-Me-132.css">
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <div id="hud">
+      <div class="panel left">
+        <div class="name"><span id="n0"></span><span class="pips" id="p0"></span></div>
+        <div class="bar spin"><i id="s0"></i></div>
+        <div class="bar burst"><i id="b0"></i></div>
+        <div class="label">SPIN / BURST</div>
+      </div>
+      <div id="timer">90</div>
+      <div id="round"></div>
+      <div class="panel right">
+        <div class="name"><span id="n1"></span><span class="pips" id="p1"></span></div>
+        <div class="bar spin"><i id="s1"></i></div>
+        <div class="bar burst"><i id="b1"></i></div>
+        <div class="label">SPIN / BURST</div>
+      </div>
+      <div id="toast"></div>
+      <div id="big"></div>
+      <div id="sub"></div>
+      <div id="launch" class="hidden">
+        <div class="bar"><i id="pw"></i><b class="sweet"></b></div>
+        <div id="tilt"></div>
+      </div>
+      <div id="ability">
+        <div id="abFill"></div>
+        <span id="abName"></span>
+        <small>SPACE</small>
+      </div>
+      <div id="hint">MOUSE STEERS &nbsp;·&nbsp; CLICK STRIKE (TIME IT ON IMPACT) &nbsp;·&nbsp; SHIFT BOOST &nbsp;·&nbsp; SPACE ABILITY</div>
+    </div>
+  </body>
+</html>
