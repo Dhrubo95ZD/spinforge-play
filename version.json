@@ -1,9 +1,9 @@
 {
-  "build": 1795526491765,
+  "build": 1795526744247,
   "version": "0.31.0",
   "apk": {
-    "code": 100,
-    "version": "0.1.0",
+    "code": 200,
+    "version": "0.2.0",
     "url": "https://github.com/Dhrubo95ZD/spinforge-play/releases/latest/download/Spinforge.apk"
   }
 }
