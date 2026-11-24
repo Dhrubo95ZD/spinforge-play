@@ -8,7 +8,9 @@
       /* One set of tokens shared by the HUD, the forge (workshop.css) and the touch controls (touch.css). */
       :root {
         --me: #ff7a33;
+        --tm: #3b8cff;
         --foe: #49b6ff;
+        --tf: #ff4a3a;
         --ink: #eef2fa;
         --dim: #8b95aa;
         --mute: #5f6a80;
@@ -103,10 +105,10 @@
         flex-direction: row-reverse;
       }
       .left .name {
-        color: var(--me);
+        color: var(--tm);
       }
       .right .name {
-        color: var(--foe);
+        color: var(--tf);
       }
       .panel .name span:first-child {
         min-width: 0;
@@ -136,7 +138,7 @@
       #lineup b {
         display: block;
         margin-bottom: 4px;
-        color: var(--foe);
+        color: var(--tf);
         font-size: 10px;
         letter-spacing: 0.2em;
       }
@@ -171,10 +173,10 @@
       }
       .right .threat {
         text-align: right;
-        color: var(--foe);
+        color: var(--tf);
       }
       .left .threat {
-        color: var(--me);
+        color: var(--tm);
       }
       .tag {
         font-style: normal;
@@ -262,10 +264,10 @@
         background: linear-gradient(270deg, color-mix(in srgb, currentColor 70%, #000), currentColor);
       }
       .left .spin {
-        color: var(--me);
+        color: var(--tm);
       }
       .right .spin {
-        color: var(--foe);
+        color: var(--tf);
       }
       .bar.burst {
         height: 4px;
@@ -416,7 +418,7 @@
       }
       #launch .bar {
         height: 14px;
-        color: var(--me);
+        color: var(--tm);
         border: 1px solid var(--hair-strong);
         background: var(--glass-strong);
       }
@@ -558,7 +560,7 @@
         display: none !important;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-BDjzX0nl.js"></script>
+    <script type="module" crossorigin src="./assets/index-DlF0Yrnv.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-DPyI4ohV.css">
   </head>
   <body>
@@ -591,6 +593,6 @@
         <small>Space</small>
       </div>
       <div id="hint">Mouse steers &nbsp;·&nbsp; Click to strike (time it on impact) &nbsp;·&nbsp; Shift boosts &nbsp;·&nbsp; Space ability</div>
-    </div>
+    </div>
   </body>
 </html>
