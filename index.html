@@ -156,6 +156,10 @@
         color: var(--dim);
       }
       .threat {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         font-size: 9px;
         font-weight: 700;
         letter-spacing: 0.1em;
@@ -201,6 +205,37 @@
         background: currentColor;
         opacity: 1;
         box-shadow: 0 0 8px currentColor;
+      }
+      .st {
+        display: none;
+        align-items: center;
+        gap: 4px;
+        font-size: var(--fs-xs);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: var(--c, #fff);
+        flex: none;
+      }
+      .st.on {
+        display: inline-flex;
+      }
+      .st i {
+        width: 9px;
+        height: 9px;
+        background: var(--c, #fff);
+        transform: rotate(45deg) scale(0.85);
+        box-shadow: 0 0 5px color-mix(in srgb, var(--c, #fff) 60%, transparent);
+      }
+      .st:not(:has(b)) {
+        margin-left: 5px;
+      }
+      .right .threat {
+        flex-direction: row-reverse;
+      }
+      .threat > span:first-child {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .bar {
         position: relative;
@@ -523,7 +558,7 @@
         display: none !important;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-Ce8mNWrW.js"></script>
+    <script type="module" crossorigin src="./assets/index-DvWpCM-f.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-DjhvyiSU.css">
   </head>
   <body>
