@@ -95,6 +95,10 @@
         justify-content: space-between;
         gap: var(--s3);
       }
+      .name.long {
+        font-size: var(--fs-sm);
+        letter-spacing: 0;
+      }
       .panel.right .name {
         flex-direction: row-reverse;
       }
@@ -103,6 +107,70 @@
       }
       .right .name {
         color: var(--foe);
+      }
+      .panel .name span:first-child {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #lineup {
+        position: absolute;
+        left: 50%;
+        top: 22%;
+        transform: translateX(-50%);
+        max-width: min(92vw, 520px);
+        padding: 8px 12px;
+        background: var(--glass-strong);
+        border: 1px solid var(--hair);
+        border-radius: var(--r-md);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s var(--ease);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+      }
+      #lineup.on {
+        opacity: 1;
+      }
+      #lineup b {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--foe);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+      }
+      #lineup div {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        white-space: nowrap;
+      }
+      #lineup span {
+        font-weight: 750;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      #lineup em {
+        font-style: normal;
+        color: var(--dim);
+      }
+      .threat {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        opacity: 0.75;
+        margin: -1px 0 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .right .threat {
+        text-align: right;
+        color: var(--foe);
+      }
+      .left .threat {
+        color: var(--me);
       }
       .tag {
         font-style: normal;
@@ -455,8 +523,8 @@
         display: none !important;
       }
     </style>
-    <script type="module" crossorigin src="./assets/index-Bv9QtH1d.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CTtlk7I0.css">
+    <script type="module" crossorigin src="./assets/index-BM7T5cPV.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BRbBD9Z3.css">
   </head>
   <body>
     <canvas id="game"></canvas>
@@ -488,6 +556,6 @@
         <small>Space</small>
       </div>
       <div id="hint">Mouse steers &nbsp;·&nbsp; Click to strike (time it on impact) &nbsp;·&nbsp; Shift boosts &nbsp;·&nbsp; Space ability</div>
-    </div>
+    </div>
   </body>
 </html>
